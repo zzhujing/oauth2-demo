@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hujing.springsecurityoauth2resource.mapper.TbContentMapper">
+
+    <!-- 开启二级缓存 -->
+    <!--<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>-->
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hujing.springsecurityoauth2resource.domain.TbContent">
+        <id column="id" property="id" />
+        <result column="category_id" property="categoryId" />
+        <result column="title" property="title" />
+        <result column="sub_title" property="subTitle" />
+        <result column="title_desc" property="titleDesc" />
+        <result column="url" property="url" />
+        <result column="pic" property="pic" />
+        <result column="pic2" property="pic2" />
+        <result column="content" property="content" />
+        <result column="created" property="created" />
+        <result column="updated" property="updated" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, category_id, title, sub_title, title_desc, url, pic, pic2, content, created, updated
+    </sql>
+
+</mapper>
