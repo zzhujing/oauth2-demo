@@ -1,8 +1,13 @@
 package com.hujing.config;
 
-import com.hujing.AuthSuccessHandler;
-import com.hujing.DefaultAuthenticationFailureHandler;
+import com.hujing.authentication.code.image.filter.ValidateCodeAuthenticationFilter;
+import com.hujing.authentication.code.sms.bean.SmsAuthenticationSecurityConfig;
+import com.hujing.authentication.handler.DefaultAuthenticationFailureHandler;
+import com.hujing.authentication.handler.DefaultAuthenticationSuccessHandler;
+import com.hujing.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -11,6 +16,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 /**
  * @author hj
@@ -22,27 +32,67 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class WebSecurityConfigration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AuthSuccessHandler authSuccessHandler;
+    private DefaultAuthenticationSuccessHandler defaultAuthenticationSuccessHandler;
     @Autowired
     private DefaultAuthenticationFailureHandler defaultAuthenticationFailureHandler;
     @Autowired
+    @Qualifier("userDetailsServiceImpl")
     private UserDetailsService userDetailsServiceImpl;
+    @Autowired
+    private SecurityProperties securityProperties;
+    @Autowired
+    private ValidateCodeAuthenticationFilter validateCodeAuthenticationFilter;
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private SmsAuthenticationSecurityConfig smsAuthenticationSecurityConfig;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
-                .loginPage("/default-login.html")
-                .loginProcessingUrl("/auth/form")
-                .successHandler(authSuccessHandler)
-                .failureHandler(defaultAuthenticationFailureHandler)
+        http
+                .addFilterBefore(validateCodeAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) //将自己的校验filter加入到filter chain
+                .formLogin()
+                .loginPage(securityProperties.getAuth().getLoginPage()) //自定义登录
+                .loginProcessingUrl(securityProperties.getAuth().getLoginProcessingUrl()) //定义登录的表单提交url,默认为/login
+                .successHandler(defaultAuthenticationSuccessHandler)//登录成功处理器
+                .failureHandler(defaultAuthenticationFailureHandler) //失败处理器
+
+                .and()
+                .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getAuth().getTokenValiditySeconds())
+                .userDetailsService(userDetailsServiceImpl)
+
+
                 .and()
                 .authorizeRequests()
-                .antMatchers("/default-login.html","/auth/form").permitAll()
+                .antMatchers(securityProperties.getAuth().getLoginPage(),
+                        securityProperties.getAuth().getLoginProcessingUrl(),
+                        securityProperties.getAuth().getMobileLoginUrl(),
+                        securityProperties.getAuth().getCodeUrl()).permitAll()
+
+
+                .and()
+                .apply(smsAuthenticationSecurityConfig)
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and().csrf().disable();
 
+    }
+
+
+    /**
+     * 配置remember me 的持久化
+     *
+     * @return
+     */
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+//        jdbcTokenRepository.setCreateTableOnStartup(true); //首次启动创建表
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.hujing;
+package com.hujing.authentication;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -14,6 +14,7 @@ import java.io.IOException;
 /**
  * @author hj
  * @create 2019-05-08 22:24
+    可以针对不同的请求方式来对需要认证的url进行不同的处理
  */
 @Controller
 @Slf4j
