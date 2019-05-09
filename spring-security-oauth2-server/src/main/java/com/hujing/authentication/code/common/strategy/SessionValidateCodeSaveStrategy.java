@@ -1,5 +1,6 @@
-package com.hujing.authentication.code.common;
+package com.hujing.authentication.code.common.strategy;
 
+import com.hujing.authentication.code.common.ValidateCode;
 import com.hujing.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -73,10 +73,10 @@ public class WebSecurityConfigration extends WebSecurityConfigurerAdapter {
 
 
                 .and()
-                .apply(smsAuthenticationSecurityConfig)
-                .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()
+                .and()
+                .apply(smsAuthenticationSecurityConfig)
                 .and().csrf().disable();
 
     }
@@ -101,7 +101,7 @@ public class WebSecurityConfigration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/oauth/check_token");
     }
 }

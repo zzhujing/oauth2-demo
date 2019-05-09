@@ -1,7 +1,7 @@
 package com.hujing.config;
 
-import com.hujing.authentication.code.common.SessionValidateCodeSaveStrategy;
-import com.hujing.authentication.code.common.ValidateCodeSaveStrategy;
+import com.hujing.authentication.code.common.strategy.SessionValidateCodeSaveStrategy;
+import com.hujing.authentication.code.common.strategy.ValidateCodeSaveStrategy;
 import com.hujing.properties.SecurityProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

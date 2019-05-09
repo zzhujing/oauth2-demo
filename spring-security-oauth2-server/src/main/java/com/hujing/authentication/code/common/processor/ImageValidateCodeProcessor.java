@@ -1,6 +1,5 @@
-package com.hujing.authentication.code.image.bean;
+package com.hujing.authentication.code.common.processor;
 
-import com.hujing.authentication.code.common.AbstractValidateCodeProcessor;
 import com.hujing.authentication.code.image.model.ImageCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

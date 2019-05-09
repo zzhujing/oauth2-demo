@@ -1,5 +1,10 @@
-package com.hujing.authentication.code.common;
+package com.hujing.authentication.code.common.processor;
 
+import com.hujing.authentication.code.common.ValidateCode;
+import com.hujing.authentication.code.common.ValidateCodeType;
+import com.hujing.authentication.code.common.generator.ValidateCodeGenerator;
+import com.hujing.authentication.code.common.strategy.ValidateCodeSaveStrategy;
+import com.hujing.authentication.code.common.utils.SpringContextHolder;
 import com.hujing.authentication.code.exception.ValidateCodeException;
 import com.hujing.properties.SecurityProperties;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +21,6 @@ import java.util.Map;
  * 2019-05-09 15:53
  * 生成验证码
  */
-
 public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> implements ValidateCodeProcessor {
 
     @Autowired
@@ -91,7 +95,6 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
     @Override
     public void validate(HttpServletRequest request, ValidateCodeType codeType) throws ServletRequestBindingException {
         String type = codeType.toString().toLowerCase();
-        String sessionKey = type + securityProperties.getCode().getSessionKeySuffix();
         ValidateCode code = validateCodeSaveStrategy.get(request, type);
         String requestParam = ServletRequestUtils.getStringParameter(request, codeType.getFormName());
         if (StringUtils.isEmpty(requestParam)) {

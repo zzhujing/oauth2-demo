@@ -1,7 +1,6 @@
-package com.hujing.authentication.code.sms.bean;
+package com.hujing.authentication.code.common.generator;
 
 import com.hujing.authentication.code.common.ValidateCode;
-import com.hujing.authentication.code.common.ValidateCodeGenerator;
 import com.hujing.properties.SecurityProperties;
 import com.hujing.properties.SmsCodeProperties;
 import org.apache.commons.lang3.RandomStringUtils;

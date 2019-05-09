@@ -1,4 +1,6 @@
-package com.hujing.authentication.code.common;
+package com.hujing.authentication.code.common.generator;
+
+import com.hujing.authentication.code.common.ValidateCode;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -1,6 +1,5 @@
-package com.hujing.authentication.code.image.bean;
+package com.hujing.authentication.code.common.generator;
 
-import com.hujing.authentication.code.common.ValidateCodeGenerator;
 import com.hujing.authentication.code.image.model.ImageCode;
 import com.hujing.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;

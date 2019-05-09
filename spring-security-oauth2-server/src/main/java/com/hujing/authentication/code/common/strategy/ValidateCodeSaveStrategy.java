@@ -1,4 +1,6 @@
-package com.hujing.authentication.code.common;
+package com.hujing.authentication.code.common.strategy;
+
+import com.hujing.authentication.code.common.ValidateCode;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,7 +17,7 @@ public interface ValidateCodeSaveStrategy {
      * @param code 验证码对象
      * @param type 验证码类型
      */
-    void save(HttpServletRequest request, ValidateCode code,String type);
+    void save(HttpServletRequest request, ValidateCode code, String type);
 
 
     /**

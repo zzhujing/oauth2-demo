@@ -1,5 +1,6 @@
 package com.hujing.springsecurityoauth2resource.service;
 
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hujing.springsecurityoauth2resource.domain.TbContent;
 

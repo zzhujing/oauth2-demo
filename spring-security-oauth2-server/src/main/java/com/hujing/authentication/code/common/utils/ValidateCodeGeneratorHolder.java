@@ -1,5 +1,6 @@
-package com.hujing.authentication.code.common;
+package com.hujing.authentication.code.common.utils;
 
+import com.hujing.authentication.code.common.processor.ValidateCodeProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 public class ValidateCodeGeneratorHolder {
 
     @Autowired
-    private Map<String,ValidateCodeProcessor> validateCodeProcessorMap;
+    private Map<String, ValidateCodeProcessor> validateCodeProcessorMap;
 
     public ValidateCodeProcessor getValidateCodeProcessor(String type) {
         String beanName = type + "ValidateCodeProcessor";
