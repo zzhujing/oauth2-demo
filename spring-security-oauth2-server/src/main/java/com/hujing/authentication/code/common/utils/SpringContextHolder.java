@@ -1,13 +1,15 @@
-package com.hujing.authentication.code.common;
+package com.hujing.authentication.code.common.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * @author hj
  * @create 2019-05-02 16:52
  */
+@Component("springContextHolder")
 public class SpringContextHolder implements ApplicationContextAware {
 
     private static ApplicationContext act;

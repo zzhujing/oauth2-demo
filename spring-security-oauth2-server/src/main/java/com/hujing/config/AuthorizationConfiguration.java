@@ -1,18 +1,23 @@
 package com.hujing.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.common.collect.Lists;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 
 /**
  * @author hj
@@ -23,22 +28,29 @@ import javax.sql.DataSource;
 public class AuthorizationConfiguration extends AuthorizationServerConfigurerAdapter {
 
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final DataSource dataSource;
 
+    private final TokenStore tokenStore;
 
-    @Autowired
-    private DataSource dataSource;
+    private final JwtAccessTokenConverter jwtAccessTokenConverter;
 
-    /**
-     * 使用数据库储存token
-     * @return
-     */
-    @Bean
-    public TokenStore tokenStore() {
-        return new JdbcTokenStore(dataSource);
+    private final UserDetailsService userDetailsServiceImpl;
+
+    private final TokenEnhancer jwtTokenEnhancer;
+
+    private final AuthenticationManager authenticationManager;
+
+    public AuthorizationConfiguration(DataSource dataSource, TokenStore tokenStore,
+                                      UserDetailsService userDetailsServiceImpl,
+                                      JwtAccessTokenConverter jwtAccessTokenConverter,
+                                      TokenEnhancer jwtTokenEnhancer,
+                                      AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        this.dataSource = dataSource;
+        this.tokenStore = tokenStore;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
+        this.jwtAccessTokenConverter = jwtAccessTokenConverter;
+        this.jwtTokenEnhancer = jwtTokenEnhancer;
     }
 
     /**
@@ -47,6 +59,7 @@ public class AuthorizationConfiguration extends AuthorizationServerConfigurerAda
      */
     @Bean
     public JdbcClientDetailsService jdbcClientDetailsService() {
+        //可以使用JdbcClientDetailsService进行ClientDetails的管理。和设置超时时间等。
         return new JdbcClientDetailsService(dataSource);
     }
 
@@ -55,10 +68,27 @@ public class AuthorizationConfiguration extends AuthorizationServerConfigurerAda
         clients.withClientDetails(jdbcClientDetailsService());
     }
 
+    /**
+     * token端点配置
+     * @param endpoints
+     * @throws Exception
+     */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(tokenStore());
+        endpoints.tokenStore(tokenStore)
+                .authenticationManager(authenticationManager)
+                .userDetailsService(userDetailsServiceImpl);
+
+        //配置jwtToken增强器
+        if (jwtTokenEnhancer != null && jwtAccessTokenConverter != null) {
+            TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+            ArrayList<TokenEnhancer> tokenEnhancers = Lists.newArrayList();
+            tokenEnhancers.add(jwtTokenEnhancer);
+            tokenEnhancers.add(jwtAccessTokenConverter);
+            tokenEnhancerChain.setTokenEnhancers(tokenEnhancers);
+            endpoints.tokenEnhancer(tokenEnhancerChain)
+                    .accessTokenConverter(jwtAccessTokenConverter);
+
+        }
     }
-
-
 }

@@ -61,6 +61,12 @@
             <artifactId>commons-collections</artifactId>
             <version>3.2.2</version>
         </dependency>
+
+        <!--解析jwt-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

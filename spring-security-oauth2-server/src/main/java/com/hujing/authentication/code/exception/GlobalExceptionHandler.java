@@ -20,4 +20,11 @@ public class GlobalExceptionHandler {
         log.error("【接收到异常】: {}",e.getMessage());
         return SimpleResult.builder().content(e.getMessage()).build();
     }
+
+    @ExceptionHandler(CustomerSecurityExcpetion.class)
+    @ResponseBody
+    public SimpleResult handler(CustomerSecurityExcpetion e) {
+        log.error("【接收到异常】: {}",e.getMessage());
+        return SimpleResult.builder().content(e.getMessage()).build();
+    }
 }

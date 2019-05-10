@@ -1,5 +1,6 @@
 package com.hujing.authentication.code.common;
 
+import com.hujing.authentication.code.common.enums.ValidateCodeType;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.context.request.ServletWebRequest;
 

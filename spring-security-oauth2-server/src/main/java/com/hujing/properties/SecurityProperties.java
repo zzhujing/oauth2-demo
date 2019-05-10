@@ -20,4 +20,6 @@ public class SecurityProperties {
 
     private ValidateCodeProperties code = new ValidateCodeProperties();
 
+    private TokenProperties token = new TokenProperties();
+
 }

@@ -2,7 +2,6 @@ package com.hujing.authentication.code.sms.bean;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -24,8 +23,7 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
      * 使用针对短信验证的userDetailsService
      */
     @Autowired
-    @Qualifier("smsUserDetailsServiceImpl")
-    private UserDetailsService smsUserDetailsServiceImpl;
+    private UserDetailsService userDetailsServiceImpl;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -34,7 +32,7 @@ public class SmsAuthenticationProvider implements AuthenticationProvider {
 
         SmsAuthenticationToken sms = (SmsAuthenticationToken) authentication;
 
-        UserDetails userDetails = smsUserDetailsServiceImpl.loadUserByUsername(((String) sms.getPrincipal()));
+        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(((String) sms.getPrincipal()));
 
         if (userDetails == null) {
             throw new InternalAuthenticationServiceException("无法获取用户信息");

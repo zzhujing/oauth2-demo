@@ -24,14 +24,12 @@ public class SmsAuthenticationSecurityConfig extends SecurityConfigurerAdapter<D
     private DefaultAuthenticationSuccessHandler defaultAuthenticationSuccessHandler;
     @Autowired
     private DefaultAuthenticationFailureHandler defaultAuthenticationFailureHandler;
-
     @Override
     public void configure(HttpSecurity builder) throws Exception {
         SmsAuthenticationFilter filter = new SmsAuthenticationFilter();
         filter.setAuthenticationManager(builder.getSharedObject(AuthenticationManager.class));
         filter.setAuthenticationSuccessHandler(defaultAuthenticationSuccessHandler);
         filter.setAuthenticationFailureHandler(defaultAuthenticationFailureHandler);
-
         builder.authenticationProvider(smsAuthenticationProvider)
                 //将短信拦截器加入到filter chain 中
                 .addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class);

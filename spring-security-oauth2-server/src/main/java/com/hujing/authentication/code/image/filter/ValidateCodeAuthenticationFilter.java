@@ -1,7 +1,7 @@
 package com.hujing.authentication.code.image.filter;
 
-import com.hujing.authentication.code.common.ValidateCodeProcessor;
-import com.hujing.authentication.code.common.ValidateCodeType;
+import com.hujing.authentication.code.common.ValidateCodeProcessorHolder;
+import com.hujing.authentication.code.common.enums.ValidateCodeType;
 import com.hujing.authentication.code.exception.ValidateCodeException;
 import com.hujing.authentication.handler.DefaultAuthenticationFailureHandler;
 import com.hujing.properties.SecurityProperties;
@@ -33,7 +33,7 @@ public class ValidateCodeAuthenticationFilter extends OncePerRequestFilter imple
     @Autowired
     private SecurityProperties securityProperties;
     @Autowired
-    private ValidateCodeProcessor validateCodeProcessor;
+    private ValidateCodeProcessorHolder validateCodeProcessorHolder;
     //储存验证码对应的验证码关系 k-> url ,v -> codeType
     private Map<String, ValidateCodeType> urlMap = new HashMap<>();
 
@@ -49,6 +49,7 @@ public class ValidateCodeAuthenticationFilter extends OncePerRequestFilter imple
         if (codeType != null) {
             try {
                 log.info("【校验开始】 验证码类型为: {} ", codeType);
+                validateCodeProcessorHolder.getValidateCodeProcessor(codeType.toString().toLowerCase()).validate(request, codeType);
             } catch (ValidateCodeException e) {
                 log.warn("【校验失败】", e.getMessage());
                 defaultAuthenticationFailureHandler.onAuthenticationFailure(request, response, e);

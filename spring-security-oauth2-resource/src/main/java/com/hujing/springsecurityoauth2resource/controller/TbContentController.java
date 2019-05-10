@@ -4,10 +4,16 @@ package com.hujing.springsecurityoauth2resource.controller;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hujing.springsecurityoauth2resource.domain.TbContent;
 import com.hujing.springsecurityoauth2resource.mapper.TbContentMapper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -66,48 +72,20 @@ public class TbContentController {
         return "删除失败";
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * 获取授权角色信息
+     * @param user
+     * @return
+     */
+    @GetMapping("/user/me")
+    public Authentication me(Authentication user, HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (StringUtils.isNotEmpty(header)) {
+            String token = StringUtils.substringAfter(header, "Bearer ");
+            Claims claims = Jwts.parser().setSigningKey("tokenKey".getBytes(StandardCharsets.UTF_8))
+                    .parseClaimsJws(token).getBody();
+            log.info("【获取到token的company信息 ： claims :{}】",claims);
+        }
+        return user;
+    }
 }

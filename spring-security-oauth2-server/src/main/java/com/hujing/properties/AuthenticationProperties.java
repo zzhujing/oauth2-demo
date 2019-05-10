@@ -22,4 +22,7 @@ public class AuthenticationProperties {
 
     //remember me过期时间 默认为7天
     private int tokenValiditySeconds = 7 * 24 * 60 * 60;
+
+    //表单登录隐藏域的实行名称
+    private String loginTypeParamName = "type";
 }

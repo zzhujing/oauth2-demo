@@ -16,7 +16,13 @@ spring:
       connection-timeout: 30000
       connection-test-query: SELECT 1
     driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    host: 192.168.18.74
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+security:
+  properties:
+    token:
+      tokenStoreType: jwt #不配置则使用的为数据库储存token
